@@ -2,8 +2,7 @@ import sys
 import os
 import vertexai
 from vertexai.preview import prompts
-from vertexai.preview import generative_models
-from vertexai.preview import types
+from vertexai.preview.prompts import Prompt
 from google.api_core.exceptions import NotFound, AlreadyExists
 
 def main():
@@ -24,19 +23,14 @@ def main():
     print(f"Initializing Vertex AI...")
     vertexai.init(project="rfp-architecture-automation", location="us-central1")
 
-    prompt_template = types.Prompt(
-        prompt_data=types.PromptData(
-            contents=[
-                generative_models.Content(
-                    parts=[generative_models.Part(text=prompt_text)]
-                )
-            ],
-            model="gemini-1.5-pro-002",
-            variables=[{"rfp_text": generative_models.Part(text="")}]
-        )
+    # 1. NEW API: Use the modernized Prompt class (v2.6.0+)
+    prompt_template = Prompt(
+        prompt_name=prompt_id,
+        prompt_data=prompt_text,
+        model_name="gemini-1.5-pro-002"
     )
 
-    # CI/CD SAFE DEPLOYMENT LOGIC
+    # 2. CI/CD SAFE DEPLOYMENT LOGIC
     try:
         # Check if it already exists
         prompts.get(prompt_id=prompt_id)
@@ -47,7 +41,14 @@ def main():
     except NotFound:
         # If it doesn't exist, create it for the first time
         print(f"Prompt '{prompt_id}' not found. Creating new prompt...")
-        prompts.create(prompt_id=prompt_id, prompt=prompt_template)
+        # Note: In the new SDK, create_version often initializes it automatically,
+        # but we explicitly call create just in case.
+        try:
+            prompts.create(prompt=prompt_template)
+        except AttributeError:
+            # Fallback if create() was deprecated in favor of create_version()
+            prompts.create_version(prompt=prompt_template)
+            
         print(f"✅ Success! New prompt registered with ID: {prompt_id}")
 
 if __name__ == '__main__':

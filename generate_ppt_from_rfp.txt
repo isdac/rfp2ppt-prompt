@@ -1,0 +1,36 @@
+You are a Senior Solution Architect. 
+
+TASK:
+Analyze the following RFP Scope of Work and extract the top-level modules required for a Solution Architecture diagram. 
+The RFP text provided below is the ONLY source of truth. Do not infer, assume, or add capabilities that are not explicitly supported by the text.
+
+RFP TEXT:
+{{rfp_text}}
+
+OUTPUT FORMAT:
+Return your final answer strictly as a single valid JSON object, with no markdown formatting and no conversational text. The JSON must contain exactly these 7 keys:
+
+1. "access_layer": Array of up to 4 objects (e.g., {"name": "Web Browser"}).
+2. "users": Array of up to 4 objects explicitly mentioned (e.g., {"name": "Citizens"}).
+3. "security_layer": Array of up to 4 objects (e.g., {"name": "Single Sign-On"}).
+4. "presentation_layer": Array of up to 10 objects. End-user facing components.
+5. "business_logic": Array of up to 15 objects. Backend functional services.
+6. "data_layer": Array of up to 6 objects. Storage systems (e.g., {"name": "Relational DB"}).
+7. "integrations": Array of up to 6 objects. External systems or APIs.
+
+LABELING CONSTRAINTS:
+- Maximum 3 words per label. Drop stop-words (the, of, and).
+- Use domain-appropriate, neutral, product-agnostic names.
+- Do not use vendor names or specific technologies.
+- If a layer has no items explicitly mentioned in the RFP, return an empty array [].
+
+EXAMPLE OUTPUT:
+{
+  "access_layer": [{"name": "Web Browser"}, {"name": "Mobile Application"}],
+  "users": [{"name": "General Public"}, {"name": "Administrators"}],
+  "security_layer": [{"name": "Identity Provider (IdP)"}, {"name": "Web Application Firewall"}],
+  "presentation_layer": [{"name": "Public Services Portal"}, {"name": "Internal Dashboard"}],
+  "business_logic": [{"name": "Workflow Routing Engine"}, {"name": "Notification Manager"}],
+  "data_layer": [{"name": "Primary Relational DB"}, {"name": "Object Storage (S3)"}],
+  "integrations": [{"name": "Govt Payment Gateway"}, {"name": "SMS Gateway API"}]
+}

@@ -10,7 +10,6 @@ def main():
         sys.exit(1)
         
     file_path = sys.argv[1]
-    # This is your human-readable text name (e.g., 'generate_ppt_from_rfp')
     display_name = os.path.splitext(os.path.basename(file_path))[0]
     
     try:
@@ -33,24 +32,24 @@ def main():
     existing_prompt_id = None
     
     try:
-        # Search through existing prompts to find the real numeric ID
         for p in prompts.list():
+            # Support both older and newer SDK property names
             name = getattr(p, "display_name", getattr(p, "prompt_name", ""))
             if name == display_name:
                 existing_prompt_id = p.prompt_id
                 break
     except Exception as e:
-        print(f"Note: Could not list prompts or registry is empty.")
+        print(f"Note: Could not list prompts (Registry might be empty).")
 
-    # CI/CD SAFE DEPLOYMENT LOGIC
+    # The Unified SDK 2.6.0+ Deployment Logic
     if existing_prompt_id:
         print(f"Prompt found! Internal ID is {existing_prompt_id}. Creating new version...")
         prompts.create_version(prompt_id=existing_prompt_id, prompt=prompt_template)
         print(f"✅ Success! New version created for prompt: {display_name}")
     else:
         print(f"Prompt not found. Registering as a new prompt...")
-        new_prompt = prompts.create(prompt=prompt_template)
-        # Extract the auto-assigned numeric ID
+        # create_version without an ID automatically creates a new prompt resource
+        new_prompt = prompts.create_version(prompt=prompt_template)
         assigned_id = getattr(new_prompt, "prompt_id", "Unknown ID")
         print(f"✅ Success! New prompt registered with Internal ID: {assigned_id}")
 

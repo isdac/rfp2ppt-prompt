@@ -6,3 +6,7 @@ steps:
       - |
         pip install google-cloud-aiplatform
         python register_prompt.py generate_ppt_from_rfp.txt
+
+# Add this block to fix the service account logging error
+options:
+  logging: CLOUD_LOGGING_ONLY

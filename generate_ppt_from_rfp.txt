@@ -4,9 +4,6 @@ TASK:
 Analyze the following RFP Scope of Work and extract the top-level modules required for a Solution Architecture diagram. 
 The RFP text provided below is the ONLY source of truth. Do not infer, assume, or add capabilities that are not explicitly supported by the text.
 
-RFP TEXT:
-{{rfp_text}}
-
 OUTPUT FORMAT:
 Return your final answer strictly as a single valid JSON object, with no markdown formatting and no conversational text. The JSON must contain exactly these 7 keys:
 
